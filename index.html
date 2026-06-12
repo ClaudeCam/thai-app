@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Aprende Tailandés</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#f5f5f0;color:#1a1a18;min-height:100vh}
+.app{max-width:900px;margin:0 auto;padding:1.5rem 1rem 3rem}
+h1{font-size:22px;font-weight:600;margin-bottom:4px}
+.subtitle{font-size:14px;color:#666;margin-bottom:1.5rem}
+nav{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:1.75rem}
+nav button{font-size:13px;padding:8px 16px;border-radius:20px;border:1px solid #ddd;background:#fff;color:#555;cursor:pointer;transition:all .15s;font-family:inherit}
+nav button.active{background:#1D9E75;color:#fff;border-color:#1D9E75}
+nav button:hover:not(.active){background:#eee;color:#222}
+.section{display:none}
+.section.active{display:block}
+.tab-row{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:1.25rem}
+.tab-row button{font-size:12px;padding:5px 13px;border-radius:14px;border:1px solid #ddd;background:#f0f0eb;color:#555;cursor:pointer;font-family:inherit;transition:all .15s}
+.tab-row button.active{background:#5DCAA5;color:#04342C;border-color:#5DCAA5}
+.word-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:10px}
+.card{background:#fff;border:1px solid #e8e8e2;border-radius:12px;padding:1.1rem 1.2rem}
+.thai{font-size:30px;line-height:1.4}
+.roman{font-size:14px;color:#1D9E75;font-weight:600;margin:2px 0}
+.trans{font-size:14px;color:#666}
+.eg{font-size:12px;color:#999;margin-top:4px}
+.tone-badge{display:inline-block;font-size:11px;font-weight:600;padding:2px 9px;border-radius:10px;margin-left:6px;vertical-align:middle}
+.t0{background:#deeeff;color:#0c447c}
+.t1{background:#c8f0e0;color:#085041}
+.t2{background:#fcd9c6;color:#712b13}
+.t3{background:#fde8a0;color:#633806}
+.t4{background:#f7cfe0;color:#72243e}
+.row{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:5px}
+.audio-btn{display:inline-flex;align-items:center;gap:4px;font-size:11px;padding:3px 9px;border-radius:10px;border:1px solid #ddd;background:#f5f5f0;color:#666;cursor:pointer;font-family:inherit;transition:all .15s}
+.audio-btn:hover{background:#fff;color:#222}
+.audio-btn svg{width:12px;height:12px;fill:currentColor}
+.phrase-block{border-left:3px solid #1D9E75;padding:.75rem 1rem;background:#fff;border-radius:0 10px 10px 0;border-top:1px solid #e8e8e2;border-right:1px solid #e8e8e2;border-bottom:1px solid #e8e8e2;margin-bottom:.75rem}
+.struct-card{background:#fff;border:1px solid #e8e8e2;border-radius:12px;padding:1rem 1.2rem;margin-bottom:1rem}
+.struct-label{font-size:11px;color:#999;text-transform:uppercase;letter-spacing:.5px;margin-bottom:3px}
+.struct-val{font-size:15px;font-weight:600;margin-bottom:6px}
+.struct-note{font-size:13px;color:#666}
+.tone-card{background:#fff;border:1px solid #e8e8e2;border-radius:12px;padding:1.1rem 1.2rem;margin-bottom:.75rem}
+.tone-title{font-size:15px;font-weight:600;margin-bottom:8px;display:flex;align-items:center;gap:8px}
+.tone-desc-text{font-size:13px;color:#555;margin:.6rem 0}
+.flash-wrap{max-width:520px;margin:0 auto}
+.flash-inner{background:#fff;border:1px solid #e8e8e2;border-radius:16px;padding:2rem 1.5rem 1.5rem;text-align:center}
+.flash-thai{font-size:46px;margin-bottom:6px}
+.flash-roman{font-size:18px;color:#1D9E75;font-weight:600;margin-bottom:4px}
+.flash-tone{margin-bottom:1rem}
+.flash-audio{display:flex;justify-content:center;gap:8px;margin-bottom:1.5rem}
+.opts{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.opt{padding:12px;border-radius:10px;border:1px solid #ddd;background:#f5f5f0;color:#222;font-size:14px;cursor:pointer;font-family:inherit;transition:all .15s;text-align:center}
+.opt:hover{background:#fff;border-color:#aaa}
+.opt.correct{background:#e1f5ee;border-color:#1D9E75;color:#085041}
+.opt.wrong{background:#fce8e0;border-color:#993c1d;color:#4a1b0c}
+.result-msg{text-align:center;font-size:14px;margin-top:.75rem;min-height:20px;font-weight:500}
+.next-btn{display:block;margin:1rem auto 0;padding:10px 30px;border-radius:20px;border:none;background:#1D9E75;color:#fff;font-size:14px;cursor:pointer;font-family:inherit}
+.next-btn:hover{background:#0F6E56}
+.stat-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:1.5rem}
+.stat-card{background:#fff;border:1px solid #e8e8e2;border-radius:12px;padding:1rem;text-align:center}
+.stat-num{font-size:30px;font-weight:600;color:#1D9E75}
+.stat-label{font-size:12px;color:#888;margin-top:2px}
+.pb-wrap{background:#eee;border-radius:8px;height:9px;overflow:hidden;margin:4px 0 10px}
+.pb{height:100%;border-radius:8px;background:#1D9E75;transition:width .4s}
+.cat-row{display:flex;justify-content:space-between;font-size:13px;margin-bottom:2px}
+.tip{font-size:13px;color:#888;margin-bottom:1.25rem;line-height:1.6;background:#fff;border:1px solid #e8e8e2;border-radius:10px;padding:.75rem 1rem}
+</style>
+</head>
+<body>
+<div class="app">
+  <h1>🇹🇭 Aprende Tailandés</h1>
+  <p class="subtitle">Para hablantes de español — sin conocimiento previo del script tailandés</p>
+  <nav>
+    <button class="active" onclick="show('vocab')">📖 Vocabulario</button>
+    <button onclick="show('grammar')">✏️ Frases y gramática</button>
+    <button onclick="show('tones')">〰️ Tonos</button>
+    <button onclick="show('flash')">🃏 Flashcards</button>
+    <button onclick="show('progress')">📊 Progreso</button>
+  </nav>
+
+  <!-- VOCABULARIO -->
+  <div id="vocab" class="section active">
+    <div class="tab-row" id="vtabs"></div>
+    <div class="word-grid" id="vgrid"></div>
+  </div>
+
+  <!-- GRAMÁTICA -->
+  <div id="grammar" class="section">
+    <div class="tab-row" id="gtabs"></div>
+    <div id="gcontent"></div>
+  </div>
+
+  <!-- TONOS -->
+  <div id="tones" class="section">
+    <div class="tip">El tailandés tiene <strong>5 tonos</strong>. La misma sílaba con distinto tono = distinta palabra. Escucha cada uno y observa la curva de entonación.</div>
+    <div id="tcontent"></div>
+  </div>
+
+  <!-- FLASHCARDS -->
+  <div id="flash" class="section">
+    <div class="flash-wrap">
+      <div class="flash-inner" id="fc">
+        <div class="flash-thai" id="fw"></div>
+        <div class="flash-roman" id="fr"></div>
+        <div class="flash-tone" id="ft"></div>
+        <div class="flash-audio">
+          <button class="audio-btn" onclick="sp(curF.word,'th-TH',1)"><svg viewBox="0 0 16 16"><path d="M3 3l10 5-10 5z"/></svg> Normal</button>
+          <button class="audio-btn" onclick="sp(curF.word,'th-TH',0.55)"><svg viewBox="0 0 16 16"><path d="M3 3l10 5-10 5z"/></svg> Lento</button>
+        </div>
+        <div class="opts" id="fopts"></div>
+        <div class="result-msg" id="fmsg"></div>
+        <button class="next-btn" id="fnext" onclick="nextF()" style="display:none">Siguiente →</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- PROGRESO -->
+  <div id="progress" class="section">
+    <div class="stat-grid">
+      <div class="stat-card"><div class="stat-num" id="pTot">0</div><div class="stat-label">Palabras practicadas</div></div>
+      <div class="stat-card"><div class="stat-num" id="pCor">0</div><div class="stat-label">Respuestas correctas</div></div>
+      <div class="stat-card"><div class="stat-num" id="pPct">0%</div><div class="stat-label">Precisión</div></div>
+    </div>
+    <div class="card"><strong style="font-size:15px">Progreso por categoría</strong><div id="cprog" style="margin-top:1rem"></div></div>
+  </div>
+</div>
+
+<script>
+const TN=['Medio','Bajo','Descendente','Alto','Ascendente'];
+const TC=['t0','t1','t2','t3','t4'];
+const TSVG=[
+  'M10,30 L90,30',
+  'M10,44 L90,44',
+  'M10,14 L90,46',
+  'M10,46 L90,14',
+  'M10,40 Q50,44 90,12'
+];
+const TDESC=[
+  'Nivel medio constante. Es el tono base del tailandés. Sin marca especial en la transliteración.',
+  'Nivel bajo constante, más grave que el medio. Se marca con un acento grave bajo: à.',
+  'Empieza alto y cae. Suena resuelto o enfático. Se marca con acento circunflejo: â.',
+  'Nivel alto constante, más agudo que el medio. Se marca con acento agudo alto: á.',
+  'Empieza bajo y sube al final, como una pregunta. Se marca con acento "ǎ" (caron).'
+];
+
+const vocab={
+  'Saludos':[
+    {word:'สวัสดี',roman:'sà-wàt-dii',tone:0,es:'Hola / Buenos días',eg:'สวัสดีครับ = Hola (hombre)'},
+    {word:'ขอบคุณ',roman:'khɔ̌ɔp-khun',tone:4,es:'Gracias',eg:'ขอบคุณมาก = Muchas gracias'},
+    {word:'ไม่เป็นไร',roman:'mâi pen rai',tone:2,es:'De nada / No hay problema',eg:''},
+    {word:'ใช่',roman:'châi',tone:2,es:'Sí',eg:''},
+    {word:'ไม่',roman:'mâi',tone:2,es:'No',eg:''},
+    {word:'โทษที',roman:'thôot-thii',tone:2,es:'Disculpa / Lo siento',eg:''},
+    {word:'ยินดีที่ได้รู้จัก',roman:'yin-dii thîi dâai rúu-jàk',tone:2,es:'Mucho gusto',eg:''},
+    {word:'แล้วเจอกัน',roman:'lɛ́ɛo jooe gan',tone:3,es:'Hasta luego',eg:''},
+  ],
+  'Números':[
+    {word:'หนึ่ง',roman:'nùeng',tone:1,es:'1 — uno',eg:''},
+    {word:'สอง',roman:'sɔ̌ɔng',tone:4,es:'2 — dos',eg:''},
+    {word:'สาม',roman:'sǎam',tone:4,es:'3 — tres',eg:''},
+    {word:'สี่',roman:'sìi',tone:1,es:'4 — cuatro',eg:''},
+    {word:'ห้า',roman:'hâa',tone:2,es:'5 — cinco',eg:''},
+    {word:'หก',roman:'hòk',tone:1,es:'6 — seis',eg:''},
+    {word:'เจ็ด',roman:'jèt',tone:1,es:'7 — siete',eg:''},
+    {word:'แปด',roman:'pàet',tone:1,es:'8 — ocho',eg:''},
+    {word:'เก้า',roman:'kâo',tone:2,es:'9 — nueve',eg:''},
+    {word:'สิบ',roman:'sìp',tone:1,es:'10 — diez',eg:''},
+    {word:'ร้อย',roman:'rɔ́ɔi',tone:3,es:'100 — cien',eg:''},
+    {word:'พัน',roman:'phan',tone:0,es:'1,000 — mil',eg:''},
+  ],
+  'Familia':[
+    {word:'แม่',roman:'mɛ̂ɛ',tone:2,es:'Mamá / madre',eg:''},
+    {word:'พ่อ',roman:'phɔ̂ɔ',tone:2,es:'Papá / padre',eg:''},
+    {word:'พี่ชาย',roman:'phîi chaai',tone:1,es:'Hermano mayor',eg:''},
+    {word:'พี่สาว',roman:'phîi sǎao',tone:1,es:'Hermana mayor',eg:''},
+    {word:'น้องชาย',roman:'nɔ́ɔng chaai',tone:3,es:'Hermano menor',eg:''},
+    {word:'น้องสาว',roman:'nɔ́ɔng sǎao',tone:3,es:'Hermana menor',eg:''},
+    {word:'ลูก',roman:'lûuk',tone:2,es:'Hijo/a',eg:''},
+    {word:'เพื่อน',roman:'phûean',tone:2,es:'Amigo/a',eg:''},
+    {word:'สามี',roman:'sǎa-mii',tone:4,es:'Esposo',eg:''},
+    {word:'ภรรยา',roman:'phan-ra-yaa',tone:0,es:'Esposa',eg:''},
+  ],
+  'Comida':[
+    {word:'ข้าว',roman:'khâao',tone:2,es:'Arroz',eg:''},
+    {word:'น้ำ',roman:'náam',tone:3,es:'Agua',eg:''},
+    {word:'อาหาร',roman:'aa-hǎan',tone:4,es:'Comida',eg:''},
+    {word:'อร่อย',roman:'à-rɔ̀i',tone:1,es:'Delicioso',eg:''},
+    {word:'เผ็ด',roman:'phèt',tone:1,es:'Picante',eg:''},
+    {word:'หวาน',roman:'wǎan',tone:4,es:'Dulce',eg:''},
+    {word:'เปรี้ยว',roman:'prîao',tone:2,es:'Ácido / agrio',eg:''},
+    {word:'เค็ม',roman:'khem',tone:0,es:'Salado',eg:''},
+    {word:'ผัดไทย',roman:'phàt thai',tone:1,es:'Pad thai',eg:''},
+    {word:'ต้มยำ',roman:'tôm yam',tone:2,es:'Sopa tom yum',eg:''},
+    {word:'ผลไม้',roman:'phǒn-la-máai',tone:3,es:'Fruta',eg:''},
+    {word:'เนื้อ',roman:'nɯ́a',tone:3,es:'Carne',eg:''},
+  ],
+  'Lugares':[
+    {word:'บ้าน',roman:'bâan',tone:2,es:'Casa / hogar',eg:''},
+    {word:'โรงเรียน',roman:'roong-rian',tone:0,es:'Escuela',eg:''},
+    {word:'โรงพยาบาล',roman:'roong-pha-yaa-baan',tone:0,es:'Hospital',eg:''},
+    {word:'ตลาด',roman:'tà-làat',tone:1,es:'Mercado',eg:''},
+    {word:'ร้านอาหาร',roman:'ráan aa-hǎan',tone:3,es:'Restaurante',eg:''},
+    {word:'สนามบิน',roman:'sà-nǎam-bin',tone:4,es:'Aeropuerto',eg:''},
+    {word:'ธนาคาร',roman:'tha-naa-khaan',tone:0,es:'Banco',eg:''},
+    {word:'ห้องน้ำ',roman:'hɔ̂ng náam',tone:2,es:'Baño',eg:''},
+    {word:'โรงแรม',roman:'roong-rɛɛm',tone:0,es:'Hotel',eg:''},
+    {word:'ถนน',roman:'tha-nǒn',tone:4,es:'Calle / carretera',eg:''},
+  ],
+  'Verbos':[
+    {word:'กิน',roman:'kin',tone:0,es:'Comer',eg:''},
+    {word:'ดื่ม',roman:'dùem',tone:1,es:'Beber',eg:''},
+    {word:'ไป',roman:'pai',tone:0,es:'Ir',eg:''},
+    {word:'มา',roman:'maa',tone:0,es:'Venir',eg:''},
+    {word:'พูด',roman:'phûut',tone:2,es:'Hablar',eg:''},
+    {word:'ฟัง',roman:'fang',tone:0,es:'Escuchar',eg:''},
+    {word:'อ่าน',roman:'àan',tone:1,es:'Leer',eg:''},
+    {word:'เขียน',roman:'khǐan',tone:4,es:'Escribir',eg:''},
+    {word:'นอน',roman:'nɔɔn',tone:0,es:'Dormir',eg:''},
+    {word:'ทำงาน',roman:'tham-ngaan',tone:0,es:'Trabajar',eg:''},
+    {word:'ซื้อ',roman:'sɯ́ɯ',tone:3,es:'Comprar',eg:''},
+    {word:'รัก',roman:'rák',tone:3,es:'Amar / querer',eg:''},
+  ],
+  'Adjetivos':[
+    {word:'ดี',roman:'dii',tone:0,es:'Bueno/a',eg:''},
+    {word:'ไม่ดี',roman:'mâi dii',tone:2,es:'Malo/a',eg:''},
+    {word:'ใหญ่',roman:'yài',tone:1,es:'Grande',eg:''},
+    {word:'เล็ก',roman:'lék',tone:3,es:'Pequeño/a',eg:''},
+    {word:'เร็ว',roman:'reo',tone:3,es:'Rápido/a',eg:''},
+    {word:'ช้า',roman:'cháa',tone:3,es:'Lento/a',eg:''},
+    {word:'ร้อน',roman:'rɔ́ɔn',tone:3,es:'Caliente',eg:''},
+    {word:'เย็น',roman:'yen',tone:0,es:'Frío/a',eg:''},
+    {word:'สวย',roman:'sǔai',tone:4,es:'Bonito/a',eg:''},
+    {word:'แพง',roman:'phɛɛng',tone:0,es:'Caro/a',eg:''},
+    {word:'ถูก',roman:'thùuk',tone:1,es:'Barato/a',eg:''},
+    {word:'เหนื่อย',roman:'nùeai',tone:1,es:'Cansado/a',eg:''},
+  ],
+};
+
+const grammar={
+  'Presente simple':{struct:'Sujeto + Verbo (+ Objeto)',note:'En tailandés el verbo no se conjuga. El tiempo se infiere del contexto.',phrases:[
+    {th:'ฉันกิน',rom:'chǎn kin',es:'Yo como'},
+    {th:'เขาพูดภาษาไทย',rom:'khǎo phûut phaa-sǎa thai',es:'Él habla tailandés'},
+    {th:'เราไปตลาด',rom:'rao pai tà-làat',es:'Nosotros vamos al mercado'},
+    {th:'เธออ่านหนังสือ',rom:'thooe àan nǎng-sǔue',es:'Ella lee libros'},
+  ]},
+  'Pasado simple':{struct:'Sujeto + Verbo + แล้ว (lɛ́ɛo)',note:'แล้ว indica que la acción ya ocurrió.',phrases:[
+    {th:'ฉันกินแล้ว',rom:'chǎn kin lɛ́ɛo',es:'Ya comí'},
+    {th:'เขาไปแล้ว',rom:'khǎo pai lɛ́ɛo',es:'Él ya fue'},
+    {th:'เราพูดแล้ว',rom:'rao phûut lɛ́ɛo',es:'Ya hablamos'},
+  ]},
+  'Futuro simple':{struct:'Sujeto + จะ (jà) + Verbo',note:'จะ equivale a "voy a" o "will" en inglés.',phrases:[
+    {th:'ฉันจะไป',rom:'chǎn jà pai',es:'Voy a ir'},
+    {th:'เขาจะกิน',rom:'khǎo jà kin',es:'Él va a comer'},
+    {th:'เราจะพูด',rom:'rao jà phûut',es:'Vamos a hablar'},
+    {th:'เธอจะซื้อ',rom:'thooe jà sɯ́ɯ',es:'Ella va a comprar'},
+  ]},
+  'Presente continuo':{struct:'Sujeto + กำลัง (gam-lang) + Verbo + อยู่ (yùu)',note:'กำลัง indica acción en progreso ahora mismo.',phrases:[
+    {th:'ฉันกำลังกินอยู่',rom:'chǎn gam-lang kin yùu',es:'Estoy comiendo'},
+    {th:'เขากำลังพูดอยู่',rom:'khǎo gam-lang phûut yùu',es:'Él está hablando'},
+    {th:'เธอกำลังอ่านอยู่',rom:'thooe gam-lang àan yùu',es:'Ella está leyendo'},
+  ]},
+  'Negación':{struct:'Sujeto + ไม่ (mâi) + Verbo/Adjetivo',note:'ไม่ (tono descendente) niega verbos y adjetivos.',phrases:[
+    {th:'ฉันไม่กิน',rom:'chǎn mâi kin',es:'No como'},
+    {th:'เขาไม่ชอบ',rom:'khǎo mâi chɔ̂ɔp',es:'A él no le gusta'},
+    {th:'ไม่เข้าใจ',rom:'mâi khâo jai',es:'No entiendo'},
+    {th:'ไม่แพง',rom:'mâi phɛɛng',es:'No es caro'},
+  ]},
+  'Preguntas Sí/No':{struct:'Sujeto + Verbo + ไหม (mǎi)',note:'Agrega ไหม al final para preguntar. Respuesta: ใช่/ไม่ใช่.',phrases:[
+    {th:'คุณกินแล้วไหม',rom:'khun kin lɛ́ɛo mǎi',es:'¿Ya comiste?'},
+    {th:'อร่อยไหม',rom:'à-rɔ̀i mǎi',es:'¿Está rico?'},
+    {th:'เข้าใจไหม',rom:'khâo jai mǎi',es:'¿Entiendes?'},
+    {th:'แพงไหม',rom:'phɛɛng mǎi',es:'¿Es caro?'},
+  ]},
+  'Preguntas abiertas':{struct:'Sujeto + Verbo + คำถาม (palabra interrogativa)',note:'Las palabras interrogativas van generalmente al final de la oración.',phrases:[
+    {th:'นี่คืออะไร',rom:'nîi khɯɯ à-rai',es:'¿Qué es esto?'},
+    {th:'คุณอยู่ที่ไหน',rom:'khun yùu thîi-nǎi',es:'¿Dónde estás?'},
+    {th:'ทำไม',rom:'tham-mai',es:'¿Por qué?'},
+    {th:'เท่าไร',rom:'thâo-rai',es:'¿Cuánto cuesta?'},
+  ]},
+  'Verbos modales':{struct:'Sujeto + Modal + Verbo',note:'ได้=poder, ต้อง=deber/tener que, อยาก=querer.',phrases:[
+    {th:'ฉันพูดภาษาไทยได้',rom:'chǎn phûut phaa-sǎa thai dâai',es:'Puedo hablar tailandés'},
+    {th:'คุณต้องไป',rom:'khun tɔ̂ng pai',es:'Tienes que ir'},
+    {th:'ฉันอยากกิน',rom:'chǎn yàak kin',es:'Quiero comer'},
+    {th:'ไม่ต้องไป',rom:'mâi tɔ̂ng pai',es:'No tienes que ir'},
+  ]},
+};
+
+let stats={total:0,correct:0,byCat:{}};
+let flist=[],curF=null,fidx=0;
+
+function pb(icon,label){return`<svg viewBox="0 0 16 16" style="width:14px;height:14px;fill:currentColor;display:inline-block;vertical-align:-2px"><path d="M3 3l10 5-10 5z"/></svg>`;}
+function audioBtns(word){
+  return`<button class="audio-btn" onclick="sp('${esc(word)}','th-TH',1)">${pb()} Normal</button><button class="audio-btn" onclick="sp('${esc(word)}','th-TH',0.55)">${pb()} Lento</button>`;
+}
+function esc(s){return s.replace(/'/g,"\\'");}
+function badge(i){return`<span class="tone-badge ${TC[i]}">${TN[i]}</span>`;}
+
+function show(id){
+  document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
+  document.querySelectorAll('nav button').forEach(b=>b.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  document.querySelector(`nav button[onclick="show('${id}')"]`).classList.add('active');
+  if(id==='flash')setupFlash();
+  if(id==='progress')updProg();
+}
+
+function sp(text,lang,rate){
+  if(!window.speechSynthesis)return;
+  speechSynthesis.cancel();
+  const u=new SpeechSynthesisUtterance(text);
+  u.lang=lang;u.rate=rate;
+  const vs=speechSynthesis.getVoices();
+  const v=vs.find(x=>x.lang===lang)||vs.find(x=>x.lang.startsWith('th'));
+  if(v)u.voice=v;
+  speechSynthesis.speak(u);
+}
+
+// Build vocab
+(function(){
+  const cats=Object.keys(vocab);
+  let active=cats[0];
+  const tabs=document.getElementById('vtabs');
+  const grid=document.getElementById('vgrid');
+  function render(cat){
+    grid.innerHTML='';
+    vocab[cat].forEach(w=>{
+      const d=document.createElement('div');
+      d.className='card';
+      d.innerHTML=`<div class="row"><span class="thai">${w.word}</span>${badge(w.tone)}</div>
+<div class="row"><span class="roman">${w.roman}</span>${audioBtns(w.word)}</div>
+<div class="trans">${w.es}</div>${w.eg?`<div class="eg">${w.eg}</div>`:''}`;
+      grid.appendChild(d);
+    });
+  }
+  cats.forEach(cat=>{
+    const b=document.createElement('button');
+    b.textContent=cat;
+    if(cat===active)b.classList.add('active');
+    b.onclick=()=>{active=cat;tabs.querySelectorAll('button').forEach(x=>x.classList.remove('active'));b.classList.add('active');render(cat);};
+    tabs.appendChild(b);
+  });
+  render(active);
+})();
+
+// Build grammar
+(function(){
+  const keys=Object.keys(grammar);
+  let active=keys[0];
+  const tabs=document.getElementById('gtabs');
+  const cont=document.getElementById('gcontent');
+  function render(k){
+    const g=grammar[k];
+    cont.innerHTML=`<div class="struct-card"><div class="struct-label">Estructura</div><div class="struct-val">${g.struct}</div><div class="struct-note">${g.note}</div></div>`
+      +g.phrases.map(p=>`<div class="phrase-block"><div class="struct-label">Ejemplo</div>
+<div class="row"><span class="thai" style="font-size:22px">${p.th}</span>${audioBtns(p.th)}</div>
+<div class="roman">${p.rom}</div><div class="trans">${p.es}</div></div>`).join('');
+  }
+  keys.forEach(k=>{
+    const b=document.createElement('button');
+    b.textContent=k;
+    if(k===active)b.classList.add('active');
+    b.onclick=()=>{active=k;tabs.querySelectorAll('button').forEach(x=>x.classList.remove('active'));b.classList.add('active');render(k);};
+    tabs.appendChild(b);
+  });
+  render(active);
+})();
+
+// Build tones
+(function(){
+  const cont=document.getElementById('tcontent');
+  const ex=[
+    {word:'มา',rom:'maa',es:'venir'},
+    {word:'หมา',rom:'mǎa',es:'perro'},
+    {word:'ม้า',rom:'máa',es:'caballo'},
+    {word:'ป้า',rom:'pâa',es:'tía mayor'},
+    {word:'หม้า',rom:'mâa',es:'matar (arcaico)'},
+  ];
+  cont.innerHTML=TN.map((name,i)=>`<div class="tone-card">
+<div class="tone-title">${badge(i)} Tono ${i+1}: ${name}</div>
+<svg width="220" height="64" viewBox="0 0 110 64" style="display:block;margin-bottom:6px">
+  <line x1="5" y1="20" x2="105" y2="20" stroke="#ddd" stroke-width="0.7" stroke-dasharray="3,3"/>
+  <line x1="5" y1="44" x2="105" y2="44" stroke="#ddd" stroke-width="0.7" stroke-dasharray="3,3"/>
+  <text x="3" y="18" font-size="8" fill="#aaa">Alto</text>
+  <text x="3" y="58" font-size="8" fill="#aaa">Bajo</text>
+  <path d="${TSVG[i]}" stroke="#1D9E75" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+</svg>
+<div class="tone-desc-text">${TDESC[i]}</div>
+<div class="row" style="margin-top:8px">
+  <span class="thai" style="font-size:22px">${ex[i].word}</span>
+  <span class="roman">${ex[i].rom}</span>
+  <span class="trans">${ex[i].es}</span>
+  ${audioBtns(ex[i].word)}
+</div></div>`).join('');
+})();
+
+// Flashcards
+function setupFlash(){
+  flist=Object.entries(vocab).flatMap(([cat,words])=>words.map(w=>({...w,cat})));
+  flist.sort(()=>Math.random()-.5);
+  fidx=0;showF();
+}
+function showF(){
+  if(!flist.length)return;
+  curF=flist[fidx%flist.length];
+  document.getElementById('fw').textContent=curF.word;
+  document.getElementById('fr').textContent=curF.roman;
+  document.getElementById('ft').innerHTML=badge(curF.tone);
+  document.getElementById('fmsg').textContent='';
+  document.getElementById('fnext').style.display='none';
+  const all=flist.map(w=>w.es);
+  const opts=[curF.es];
+  while(opts.length<4){const p=all[Math.floor(Math.random()*all.length)];if(!opts.includes(p))opts.push(p);}
+  opts.sort(()=>Math.random()-.5);
+  document.getElementById('fopts').innerHTML=opts.map(o=>`<button class="opt" onclick="chk(this,'${esc(o)}','${esc(curF.es)}')">${o}</button>`).join('');
+}
+function chk(btn,chosen,correct){
+  document.querySelectorAll('.opt').forEach(b=>b.onclick=null);
+  stats.total++;
+  if(!stats.byCat[curF.cat])stats.byCat[curF.cat]={t:0,c:0};
+  stats.byCat[curF.cat].t++;
+  if(chosen===correct){
+    btn.classList.add('correct');
+    document.getElementById('fmsg').textContent='✓ ¡Correcto!';
+    stats.correct++;stats.byCat[curF.cat].c++;
+  } else {
+    btn.classList.add('wrong');
+    document.querySelectorAll('.opt').forEach(b=>{if(b.textContent===correct)b.classList.add('correct');});
+    document.getElementById('fmsg').textContent='✗ Era: '+correct;
+  }
+  document.getElementById('fnext').style.display='block';
+}
+function nextF(){fidx++;showF();}
+
+function updProg(){
+  document.getElementById('pTot').textContent=stats.total;
+  document.getElementById('pCor').textContent=stats.correct;
+  document.getElementById('pPct').textContent=stats.total?Math.round(100*stats.correct/stats.total)+'%':'0%';
+  const cats=Object.keys(vocab);
+  document.getElementById('cprog').innerHTML=cats.map(cat=>{
+    const d=stats.byCat[cat]||{t:0,c:0};
+    const p=d.t?Math.round(100*d.c/d.t):0;
+    return`<div class="cat-row"><span>${cat}</span><span style="color:#888">${d.c}/${d.t} correctas</span></div>
+<div class="pb-wrap"><div class="pb" style="width:${p}%"></div></div>`;
+  }).join('');
+}
+speechSynthesis.getVoices();
+</script>
+</body>
+</html>
